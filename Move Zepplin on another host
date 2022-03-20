@@ -1,0 +1,65 @@
+Move Zepplin on another host
+
+First it's important to take backup the configuration and notebooks, then, remove existing role, add the new role in the target node and restore the backup in the new node. So far, no multiples instances are allowed in CM 7.X, this is a feature request for CM [CDPD-7518] so we will need to remove the existing role and add a new one in the new host.
+
+**Recommended Actions**
+
+1. The first thing is to have a backup of current zeppelin role:
+          * Notebooks (/var/lib/zeppelin/notebook)
+          * Config of Zeppelin config (/etc/zeppelin/conf) like shiro.ini,interpreter.json…
+
+2. Remove Existing Zeppelin role
+           CM UI > Zeppelin > Instances > Remove
+
+3. Add new Zeppelin in the new host. Add the role from CM UI > Zeppelin > Instances > Add Role 
+            Instances.
+
+4. Start the role so we know it's working fine, then stop it
+
+5. Import notebooks and config to the new host to the respective paths.
+
+6. Start Zeppelin in the new host.
+
+
+***************************** *****************************************************************************
+Thanks for the sharing details.
+
+There is no data present under /var/lib/zeppelin/notebook in the existing Zeppelin host: dfhdpdn07.saas.amherst.com.
+Are we still good to move Zeppelin role to another host?
+
+*******************  **********************************************************************************
+You can double check the path in Zeppelin under
+
+Zeppelin > Configuration > Search for "zeppelin.notebook.dir" it should provide you the existing path of the notebooks.
+****************    *******************************************************************************************
+The zeppelin.notebook.dir is set to HDFS location.
+zeppelin.notebook.dir: hdfs:///user/zeppelin/notebook
+************************************************** *************************************************************
+Before Migrating role to another host we just want to confirm one thing. Do we need to manually configure all existing interpreters or it can be restored from backup?
+
+As our client is having concern about Livy and Livy3 interpreters.
+**********************************   *******************************************************************************
+You can take a backup /restore in new node(interpreter file. "/etc/zeppelin/conf/interpreter.json") for the interpreters not available after migrating this file may need to be manually created when Zeppelin role is installed on the new node.
+
+*********************************** **********************************************************************************
+Hello Team,
+
+Yes, the idea is to copy the interpreter.json in the same location in the new node. If not all interpreters are present you should create them manually. You will find information about supported interpreters in the following links:
+
+[1]https://docs.cloudera.com/cdp-private-cloud-base/7.1.6/using-zeppelin/topics/using_the_livy_interpreter_to_access_spark.html
+[2]https://docs.cloudera.com/cdp-private-cloud-base/7.1.6/using-zeppelin/topics/configuring_and_using_zeppelin_interpreters.html
+
+If additional help is required let me know and I will engage one of my coworkers to schedule a meeting in IST hours.
+
+******************************* **************************************************************************************
+
+Actually we configured Livy3 interpreter. We want to restore that. From what you said I understood that
+
+1.Copy interpreter.json file from backup to /etc/hadoop/conf of new node.
+2.Restart Zeppelin Service
+
+
+From this will we able to see livy3 interpreter as configured before from Zeppelin UI?
+
+
+
